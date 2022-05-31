@@ -4,7 +4,7 @@ info:
   version: "0.0.1"
   title: "Authentification Microservice"
 host: "auth.cyber-city.systems"
-basePath: "/"
+basePath: "/api"
 tags:
 - name: "accounts"
   description: "Funktionen zum Umgang mit Accounts."

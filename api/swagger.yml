@@ -14,6 +14,21 @@ schemes:
 - "http"
 paths:
   /accounts:
+    get:
+      tags:
+      - "accounts"
+      summary: "Gibt eine Liste von IDs aller Accounts zurück."
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Liste der Account-IDs wurde erfolgreich zusammengestellt."
+          schema:
+            $ref: "#/definitions/GetAccounts200"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
     post:
       tags:
       - "accounts"
@@ -417,3 +432,20 @@ definitions:
                 type: "string"
                 example: "1h"
                 description: "Gültigkeitsdauer des Tokens."
+  GetAccounts200:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "SUCCESS"
+        description: "Ein Code, der zeigt, dass die Anfrage erfolgreich war. Dieser kann ignoriert werden, da man aus dem Statuscode schließen kann, dass es sich um einen Erfolg handelt."
+      devMsg:
+        type: "string"
+        example: ""
+        description: "Eine Nachricht, die Entwicklern zusätzliche Informationen geben kann, aber nicht weiterverarbeitet werden soll. Erfolgreiche Anfragen haben meistens keine Nachricht."
+      content:
+        type: "array"
+        description: "Die Account-IDs."
+        items:
+          type: "integer"
+        example: [32, 59, 44]

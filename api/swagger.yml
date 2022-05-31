@@ -1,0 +1,419 @@
+swagger: "2.0"
+info:
+  description: "Authentification Microservice API"
+  version: "0.0.1"
+  title: "Authentification Microservice"
+host: "auth.cyber-city.systems"
+basePath: "/"
+tags:
+- name: "accounts"
+  description: "Funktionen zum Umgang mit Accounts."
+- name: "tokens"
+  description: "Login, Logout, Tokens."
+schemes:
+- "http"
+paths:
+  /accounts:
+    post:
+      tags:
+      - "accounts"
+      summary: "Erstellt einen Account."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Account-Objekt, das erstellt werden soll."
+        required: true
+        schema:
+          $ref: "#/definitions/RegisterAccountData"
+      security: []
+      responses:
+        "201":
+          description: "Account wurde erfolgreich erstellt."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "409":
+          description: "Email oder Benutzername ist vergeben."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "422":
+          description: "Falsche Eingabedaten. Z. B. unzulässige Email oder Passwort."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+    patch:
+      tags:
+      - "accounts"
+      summary: "Aktualisiert einen vorhandenen Account."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "query"
+        description: "Email des Accounts, der aktualisiert werden soll."
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Account-Objekt mit Attributen, die aktualisiert werden sollen. Attribute, die nicht aktualisiert werden sollen, werden weggelassen."
+        required: true
+        schema:
+          $ref: "#/definitions/RegisterAccountData"
+      responses:
+        "200":
+          description: "Account wurde erfolgreich aktualisiert."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "409":
+          description: "Email ist vergeben."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        "422":
+          description: "Falsche Eingabedaten. Z. B. unzulässige Email oder Passwort."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+    delete:
+      tags:
+      - "accounts"
+      summary: "Löscht einen vorhandenen Account."
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "query"
+        description: "Email des Accounts, der gelöscht werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Account wurde erfolgreich gelöscht."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/findByID:
+    get:
+      tags:
+      - "accounts"
+      summary: "Suche nach einem Account anhand der ID."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "query"
+        description: "ID des Accounts, nach dem gesucht werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Accountinformationen wurden erfolgreich zurückgegeben."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                $ref: "#/definitions/AccountInfo"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /accounts/findByEmail:
+    get:
+      tags:
+      - "accounts"
+      summary: "Suche nach einem Account anhand der Email."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "query"
+        description: "Email des Accounts, nach dem gesucht werden soll."
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Accountinformationen wurden erfolgreich zurückgegeben."
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "string"
+                example: "SUCCESS"
+              devMsg:
+                type: "string"
+                example: ""
+              content:
+                $ref: "#/definitions/AccountInfo"
+        "404":
+          description: "Account wurde nicht gefunden."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /login:
+    post:
+      tags:
+      - "tokens"
+      summary: "Loggt einen Account ein und gibt ein Token zurück."
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Login-Daten."
+        required: true
+        schema:
+          $ref: "#/definitions/LoginData"
+      responses:
+        "200":
+          description: > 
+            Der Benutzer wurde erfolgreich eingeloggt.
+            Das Token wird in dem Authorization-Header zurückgegeben.
+          headers:
+            Authorization:
+              type: "string"
+              format: "string"
+              description: "Header, der das Token enthält."
+          schema:
+            $ref: "#/definitions/LoginResponseSuccess"
+        "409":
+          description: "Falsche Email oder falsches Passwort."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  /logout:
+    delete:
+      tags:
+      - "tokens"
+      summary: "Loggt den eingeloggten Benutzer aus. (Noch nicht implementiert)"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Benutzer wurde erfolgreich ausgeloggt."
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+  /validate_token:
+    get:
+      tags:
+      - "tokens"
+      summary: "Überprüft ein Token auf Gültigkeit."
+      produces:
+      - "application/json"
+      parameters:
+      - in: "header"
+        name: "Authorization"
+        type: "string"
+        description: >
+          Das Token, das überprüft werden soll. Es hat die Form: "JWT &lt;Token&gt;"
+        required: true
+      - in: "query"
+        name: "email"
+        type: "string"
+        description: >
+          Die Email des Accounts, zu dem das Token gehört. Wird dieses Feld weggelassen, wird nur überprüft, ob das Token selbst gültig ist.
+          Wird dieses Feld mitgegeben, wird überprüft, ob das Token tatsächlich dem Account gehört.
+        required: false
+      responses:
+        "200":
+          description: > 
+            Das Token ist gültig und gehört zur dem Account (falls angegeben).
+          schema:
+            $ref: "#/definitions/ApiSuccessResponseSimple"
+        "401":
+          description: "Das Token ist ungültig oder gehört nicht zum Account (falls angegeben)."
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+definitions:
+  AccountInfo:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+        example: "my_epic_mail@gmail.com"
+        description: "Registrierungs-Email"
+      first_name:
+        type: "string"
+        example: "Jeff"
+        description: "Vorname"
+      last_name:
+        type: "string"
+        example: "Meyer"
+        description: "Nachname"
+      date_of_birth:
+        type: "string"
+        format: "date"
+        example: "2022-05-29"
+        description: "Geburtsdatum im ISO-Format"
+      street:
+        type: "string"
+        example: "Main Street"
+        description: "Straße"
+      street2:
+        type: "string"
+        example: "Apartment 3"
+        description: "Optionaler Straßenzusatz"
+      house_number:
+        type: "string"
+        example: "123"
+        description: "Hausnummer"
+      registration_date:
+        type: "string"
+        format: "date"
+        example: "2022-05-29"
+        description: "Registrierungsdatum im ISO-Format"
+  RegisterAccountData:
+    type: "object"
+    required:
+    - "email"
+    - "password"
+    - "first_name"
+    - "last_name"
+    - "date_of_birth"
+    - "street"
+    - "house_number"
+    properties:
+      email:
+        type: "string"
+        example: "my_epic_mail@gmail.com"
+        description: "Registrierungs-Email"
+      password:
+        type: "string"
+        example: "password123"
+        description: "Klartext Passwort"
+      first_name:
+        type: "string"
+        example: "Jeff"
+        description: "Vorname"
+      last_name:
+        type: "string"
+        example: "Meyer"
+        description: "Nachname"
+      date_of_birth:
+        type: "string"
+        format: "date"
+        example: "2022-05-29"
+        description: "Geburtsdatum im ISO-Format"
+      street:
+        type: "string"
+        example: "Main Street"
+        description: "Straße"
+      street2:
+        type: "string"
+        example: "Apartment 3"
+        description: "Optionaler Straßenzusatz"
+      house_number:
+        type: "string"
+        example: "123"
+        description: "Hausnummer"
+  LoginData:
+    type: "object"
+    required:
+    - "email"
+    - "password"
+    properties:
+      email:
+        type: "string"
+        example: "my_epic_mail@gmail.com"
+        description: "Registrierungs-Email"
+      password:
+        type: "string"
+        example: "password123"
+        description: "Klartext Passwort"
+  ApiErrorResponse:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "ERR_VALIDATION"
+        description: "Ein Fehlercode, der bei der Programmierung des Clients helfen kann."
+      devMsg:
+        type: "string"
+        example: "Validation der Eingabe fehlgeschlagen."
+        description: "Eine Nachricht, die Entwicklern helfen soll, den Fehler besser zu verstehen, aber nicht weiterverarbeitet werden soll."
+      errors:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            msg:
+              type: "string"
+              description: "Name des Fehlers. Dieser kann ein String sein, der an sich keinen Sinn ergibt, aber übersetzt werden kann. Z. B. \"validation.username.length\"."
+              example: "validation.username.length"
+            params:
+              type: "array"
+              description: "Eine optionale Liste von Parametern, die den Fehler besser beschreiben können. Diese Liste ist als Map zu verstehen, in der die Namen der Felder die Namen der Parameter sind und die Werte der Felder die Werte der entsprechenden Parameter."
+              items:
+                type: "object"
+                properties:
+                  parametername:
+                    type: "string"
+                    description: "Das (als Beispiel)\"parametername\"-Feld wird den Namen des Parameters haben, und als Wert den Wert des Parameters."
+              example: {"min": 4, "max": 16}
+        description: "Eine Liste von Fehlern, die bei der Programmierung helfen können, die Fehlermeldungen detaillierter zu gestalten."
+      content:
+        type: "object"
+        example: null
+        description: "Dieser Wert beinhaltet normalerweise die Daten der Antwort des Servers. Im Falle eines Fehlers ist dieser üblicherweise aus Kompatibilitätsgründen da, aber hat den Wert \"null\"."
+  ApiSuccessResponseSimple:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "SUCCESS"
+        description: "Ein Code, der zeigt, dass die Anfrage erfolgreich war. Dieser kann ignoriert werden, da man aus dem Statuscode schließen kann, dass es sich um einen Erfolg handelt."
+      devMsg:
+        type: "string"
+        example: ""
+        description: "Eine Nachricht, die Entwicklern zusätzliche Informationen geben kann, aber nicht weiterverarbeitet werden soll. Erfolgreiche Anfragen haben meistens keine Nachricht."
+      content:
+        type: "object"
+        example: null
+        description: "Dieser Wert beinhaltet die Daten der Antwort des Servers. Im Falle eines Fehlers ist dieser üblicherweise aus Kompatibilitätsgründen da, aber hat den Wert \"null\". Es kommt auf die Anfrage an, auf was dieser Wert gesetzt wird."
+  LoginResponseSuccess:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "SUCCESS"
+        description: "Ein Code, der zeigt, dass die Anfrage erfolgreich war. Dieser kann ignoriert werden, da man aus dem Statuscode schließen kann, dass es sich um einen Erfolg handelt."
+      devMsg:
+        type: "string"
+        example: ""
+        description: "Eine Nachricht, die Entwicklern zusätzliche Informationen geben kann, aber nicht weiterverarbeitet werden soll. Erfolgreiche Anfragen haben meistens keine Nachricht."
+      content:
+        type: "object"
+        description: "Dieser Wert beinhaltet die Daten der Antwort des Servers. Im Falle eines Fehlers ist dieser üblicherweise aus Kompatibilitätsgründen da, aber hat den Wert \"null\". Es kommt auf die Anfrage an, auf was dieser Wert gesetzt wird."
+        properties:
+          account_id:
+            type: "integer"
+            example: 69
+            description: "Account-ID des Accounts, mit dem sich eingeloggt wurde."
+          jwt:
+            type: "object"
+            description: "Das JSON Web Token, das für den Account erstellt wurde."
+            properties:
+              token:
+                type: "string"
+                example: "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzY290Y2guaW8iLCJleHAiOjEzMDA4MTkzODAsIm5hbWUiOiJDaHJpcyBTZXZpbGxlamEiLCJhZG1pbiI6dHJ1ZX0.03f329983b86f7d9a9f5fef85305880101d5e302afafa20154d094b229f75773"
+                description: "JSON Web Token"
+              expiresIn:
+                type: "string"
+                example: "1h"
+                description: "Gültigkeitsdauer des Tokens."

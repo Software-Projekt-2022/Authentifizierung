@@ -1,0 +1,21 @@
+# Dependency directories, "npm i" is used in dockerfile to install dependencies
+node_modules/
+
+# dotenv environment variables file
+.env
+
+# Keys used for JWT
+id_rsa.pem
+id_rsa_pub.pem
+
+# Test files
+test/
+
+# Git files
+.git
+.gitignore
+
+# Other
+Dockerfile
+README.md
+sql

@@ -113,6 +113,22 @@ async function getAccountByEmail(account_email)
     return null;
 }
 
+async function getAccountIDs()
+{
+    let accs = await doQuery('SELECT account_id FROM account;');
+
+    if(accs)
+    {
+        const ids = [];
+        for (const entry of accs)
+        {
+            ids.push(entry.account_id);
+        }
+        return ids;
+    }
+    return null;
+}
+
 async function updateRow(table, where, values)
 {
     let query = `UPDATE ${table} SET `;
@@ -144,6 +160,7 @@ module.exports.doQuery = doQuery;
 
 module.exports.getAccountByEmail = getAccountByEmail;
 module.exports.getAccountByID = getAccountByID;
+module.exports.getAccountIDs = getAccountIDs;
 module.exports.registerAccount = registerAccount;
 module.exports.isEmailTaken = isEmailTaken;
 module.exports.getAccountAuthData = getAccountAuthData;

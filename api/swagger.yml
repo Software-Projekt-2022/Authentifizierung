@@ -25,10 +25,6 @@ paths:
           description: "Liste der Account-IDs wurde erfolgreich zusammengestellt."
           schema:
             $ref: "#/definitions/GetAccounts200"
-        "404":
-          description: "Account wurde nicht gefunden."
-          schema:
-            $ref: "#/definitions/ApiErrorResponse"
     post:
       tags:
       - "accounts"

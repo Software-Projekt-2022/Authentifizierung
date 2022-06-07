@@ -12,7 +12,7 @@ on:
 #2https://registry.digitalocean.com/cybercityregistry/authentifikation
 env:
   REGISTRY: "registry.digitalocean.com/cybercityregistry"
-  IMAGE_NAME: "authentifikation:latest"
+  IMAGE_NAME: "authentifizierung:latest"
 
 #3
 jobs:

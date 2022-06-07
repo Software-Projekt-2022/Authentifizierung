@@ -2,9 +2,9 @@ FROM node:16-alpine
 
 ENV DB_HOST="localhost"
 ENV DB_PORT="3306"
-ENV DB_NAME="Authentification"
-ENV DB_USER=
-ENV DB_PASS=
+ENV DB_NAME="auth"
+ENV DB_USER=auth
+ENV DB_PASS=authdbpw1234
 
 ENV SERVER_HOST="localhost"
 ENV SERVER_PORT="80"

@@ -1,6 +1,6 @@
 FROM node:16-alpine
 
-ENV DB_HOST="auth"
+ENV DB_HOST="authdb"
 ENV DB_PORT="3306"
 ENV DB_NAME="auth"
 ENV DB_USER=auth

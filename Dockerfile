@@ -1,6 +1,6 @@
 FROM node:16-alpine
 
-ENV DB_HOST="localhost"
+ENV DB_HOST="auth"
 ENV DB_PORT="3306"
 ENV DB_NAME="auth"
 ENV DB_USER=auth
@@ -20,6 +20,6 @@ WORKDIR /Authentification
 
 COPY . .
 
+RUN echo $(ls)
 RUN npm install
-
 ENTRYPOINT ["npm", "start"]

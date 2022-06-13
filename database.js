@@ -2,7 +2,7 @@ const mariadb = require('mariadb');
 
 console.log(
 `Connecting to database with the following information:
-  Host: ${process.env.DB_HOST}
+  Host: ${process.env.DB_HOST}:${process.env.DB_PORT}
   User: ${process.env.DB_USER}
   DB Name: ${process.env.DB_NAME}`
 );
@@ -11,6 +11,7 @@ const db_connect_pool = mariadb.createPool({
     host: process.env.DB_HOST, 
     user: process.env.DB_USER, 
     password: process.env.DB_PASS,
+    port: process.env.DB_PORT,
     connectionLimit: 4,
     database: process.env.DB_NAME
 });

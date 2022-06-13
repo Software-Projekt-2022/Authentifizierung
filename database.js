@@ -2,7 +2,7 @@ const mariadb = require('mariadb');
 
 console.log(
 `Connecting to database with the following information:
-  Host: ${process.env.DB_HOST}
+  Host: ${process.env.DB_HOST}:${process.env.DB_PORT}
   User: ${process.env.DB_USER}
   DB Name: ${process.env.DB_NAME}`
 );
@@ -11,6 +11,7 @@ const db_connect_pool = mariadb.createPool({
     host: process.env.DB_HOST, 
     user: process.env.DB_USER, 
     password: process.env.DB_PASS,
+    port: process.env.DB_PORT,
     connectionLimit: 4,
     database: process.env.DB_NAME
 });
@@ -113,6 +114,22 @@ async function getAccountByEmail(account_email)
     return null;
 }
 
+async function getAccountIDs()
+{
+    let accs = await doQuery('SELECT account_id FROM account;');
+
+    if(accs)
+    {
+        const ids = [];
+        for (const entry of accs)
+        {
+            ids.push(entry.account_id);
+        }
+        return ids;
+    }
+    return null;
+}
+
 async function updateRow(table, where, values)
 {
     let query = `UPDATE ${table} SET `;
@@ -144,6 +161,7 @@ module.exports.doQuery = doQuery;
 
 module.exports.getAccountByEmail = getAccountByEmail;
 module.exports.getAccountByID = getAccountByID;
+module.exports.getAccountIDs = getAccountIDs;
 module.exports.registerAccount = registerAccount;
 module.exports.isEmailTaken = isEmailTaken;
 module.exports.getAccountAuthData = getAccountAuthData;

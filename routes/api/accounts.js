@@ -86,4 +86,15 @@ router.delete('/', jwtAuth, async (req, res) =>
     res.sendResponse(responses.not_implemented);
 });
 
+router.get('/', async (req, res) =>
+{
+    const accs = await database.getAccountIDs();
+    if(accs)
+    {
+        res.sendResponse(responses.success, '', accs);
+        return;
+    }
+    res.sendResponse(responses.internal_server_error);
+});
+
 module.exports = router;

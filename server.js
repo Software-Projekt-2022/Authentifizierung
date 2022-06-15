@@ -35,5 +35,7 @@ app.use('/api/accounts/findByID', require('./routes/api/accounts/findByID'));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+require('./events/event_system_connection').sendEvent(require('./events/event_factory').adminMessageBroadcastEvent('Das ist ein Test'));
+
 console.log(`Listening on ${process.env.SERVER_HOST}:${process.env.SERVER_PORT}...`);
 app.listen(process.env.SERVER_PORT, process.env.SERVER_HOST);

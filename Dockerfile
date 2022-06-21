@@ -9,7 +9,7 @@ ENV DB_PASS=authdbpw1234
 ENV RABBITMQ_HOST="rabbitmq"
 ENV RABBITMQ_PORT="5672"
 
-ENV SERVER_HOST="localhost"
+ENV SERVER_HOST="authentifizierung"
 ENV SERVER_PORT="80"
 
 ENV JWT_PRIVATE_KEY_PATH="./id_rsa.pem"

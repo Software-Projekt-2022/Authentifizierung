@@ -6,7 +6,6 @@ const YAML = require('yamljs');
 const morgan = require('morgan');
 
 const app = express();
-app.enable('trust proxy');
 
 const swaggerDocument = YAML.load('./api/swagger.yml');
 const { myMiddleware } = require('./middleware');
@@ -38,4 +37,4 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 require('./events/event_system_connection').sendEvent(require('./events/event_factory').adminMessageBroadcastEvent('Das ist ein Test'));
 
 console.log(`Listening on ${process.env.SERVER_HOST}:${process.env.SERVER_PORT}...`);
-app.listen(process.env.SERVER_PORT, process.env.SERVER_HOST);
+app.listen(process.env.SERVER_PORT);

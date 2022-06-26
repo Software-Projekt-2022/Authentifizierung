@@ -4,6 +4,7 @@ const passport = require('passport');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const app = express();
 
@@ -23,6 +24,13 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(myMiddleware);
+
+app.use((req, res, next) =>
+{
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 //Add routers
 app.use('/api/login', require('./routes/api/login'));

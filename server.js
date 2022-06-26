@@ -24,6 +24,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(myMiddleware);
+app.use(cors());
 
 app.use((req, res, next) =>
 {

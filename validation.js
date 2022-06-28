@@ -14,14 +14,14 @@ schema.create_account = checkSchema(
     {
         in: ['body'],
         exists: existsCustom('validation.first_name.missing'),
-        isLength: isLengthCustom(4, 64, 'validation.first_name.length'),
+        isLength: isLengthCustom(1, 64, 'validation.first_name.length'),
         trim: true
     },
     last_name:
     {
         in: ['body'],
         exists: existsCustom('validation.last_name.missing'),
-        isLength: isLengthCustom(4, 64, 'validation.last_name.length'),
+        isLength: isLengthCustom(1, 64, 'validation.last_name.length'),
         trim: true
     },
     date_of_birth:
